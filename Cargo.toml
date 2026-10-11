@@ -1,0 +1,29 @@
+[workspace]
+resolver = "3"
+members = ["kwest-core", "kwest-tui"]
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+license = "MIT"
+# Not on crates.io. Remove this, and add description and repository, to publish.
+publish = false
+# Measured minimum: let chains need 1.88. CI tests it (the msrv job); keep the two in sync.
+rust-version = "1.88"
+
+[workspace.lints.rust]
+missing_debug_implementations = "warn"
+missing_docs = "warn"
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+# `Arc::clone(&x)`, not `x.clone()`: copying a shared pointer should not read like a deep copy.
+clone_on_ref_ptr = "warn"
+# `widgets.rs` next to `widgets/`, not `widgets/mod.rs`: the Rust 2018 layout, so editor tabs
+# show module names rather than a row of `mod.rs`.
+mod_module_files = "warn"
+
+[workspace.dependencies]
+rand = "0.10.3"
+thiserror = "2.0.21"

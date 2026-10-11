@@ -1,0 +1,36 @@
+# Check that `words.txt` is what `build_words.py` makes from SCOWL, so neither is edited without
+# the other. It downloads SCOWL, so it runs only when the word list data changes.
+# Actions are pinned by commit hash, not tag, because a tag can be moved to other code; the
+# comment after each hash names the version it was.
+name: Word list
+
+on:
+  push:
+    branches: [main]
+    paths: [kwest-tui/data/**, .github/workflows/words.yml]
+  pull_request:
+    paths: [kwest-tui/data/**, .github/workflows/words.yml]
+
+permissions:
+  contents: read
+
+env:
+  SCOWL_URL: https://downloads.sourceforge.net/project/wordlist/SCOWL/2020.12.07/scowl-2020.12.07.tar.gz
+  # Pinned, so a changed download fails here instead of quietly changing the list.
+  SCOWL_SHA256: 5587667caa20c4891390c2d42dbb4d5c4c3f41bee77af1457ece3ba23fb859cc
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Download SCOWL
+        run: |
+          mkdir -p "$RUNNER_TEMP/scowl"
+          curl -sSfL -o "$RUNNER_TEMP/scowl.tar.gz" "$SCOWL_URL"
+          echo "$SCOWL_SHA256  $RUNNER_TEMP/scowl.tar.gz" | sha256sum --check
+          tar xzf "$RUNNER_TEMP/scowl.tar.gz" -C "$RUNNER_TEMP/scowl"
+      - name: Regenerate words.txt and compare
+        run: |
+          python3 -I kwest-tui/data/build_words.py "$RUNNER_TEMP/scowl/scowl-2020.12.07" > "$RUNNER_TEMP/words.txt"
+          diff -u kwest-tui/data/words.txt "$RUNNER_TEMP/words.txt"

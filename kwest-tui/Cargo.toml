@@ -1,0 +1,20 @@
+[package]
+name = "kwest-tui"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+crossterm = "0.29.0"
+kwest-core = { version = "0.1.0", path = "../kwest-core" }
+rand.workspace = true
+thiserror.workspace = true
+unicode-width = "0.2.2"
+
+[dev-dependencies]
+tempfile = "3.27.0"
