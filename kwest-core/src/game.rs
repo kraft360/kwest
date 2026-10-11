@@ -296,8 +296,8 @@ mod tests {
         let game = create_game(&["HELLO", "WORLD"], 0, MAX_ATTEMPTS);
         assert_eq!(game.max_attempts(), MAX_ATTEMPTS);
         assert_eq!(game.secret, "HELLO");
-        assert!(game.evaluated_guesses.is_empty());
-        assert!(game.active_guess.is_empty());
+        assert_eq!(game.evaluated_guesses, Vec::<EvaluatedGuess>::new());
+        assert_eq!(game.active_guess, "");
         assert_eq!(game.status, Status::InProgress);
         assert_eq!(game.pending_attempts(), MAX_ATTEMPTS);
         assert_eq!(game.refusal(), None);
@@ -325,7 +325,7 @@ mod tests {
             }),
         );
         assert_eq!(game.active_guess, "AB");
-        assert!(game.evaluated_guesses.is_empty());
+        assert_eq!(game.evaluated_guesses, Vec::<EvaluatedGuess>::new());
         assert_eq!(game.pending_attempts(), MAX_ATTEMPTS);
     }
 
@@ -362,7 +362,7 @@ mod tests {
         let mut game = create_won_game();
         assert_eq!(game.append('A'), Err(RejectionError::GameOver));
         assert_eq!(game.append('-'), Err(RejectionError::GameOver));
-        assert!(game.active_guess.is_empty());
+        assert_eq!(game.active_guess, "");
         assert_eq!(game.pending_attempts(), MAX_ATTEMPTS - 1);
     }
 
@@ -434,7 +434,7 @@ mod tests {
     fn delete_of_empty_guess_is_rejected() {
         let mut game = create_game(&["HELLO", "WORLD"], 0, MAX_ATTEMPTS);
         assert_eq!(game.delete(), Err(RejectionError::EmptyGuess));
-        assert!(game.active_guess.is_empty());
+        assert_eq!(game.active_guess, "");
         assert_eq!(game.pending_attempts(), MAX_ATTEMPTS);
     }
 
@@ -442,7 +442,7 @@ mod tests {
     fn delete_after_game_over_is_rejected() {
         let mut game = create_won_game();
         assert_eq!(game.delete(), Err(RejectionError::GameOver));
-        assert!(game.active_guess.is_empty());
+        assert_eq!(game.active_guess, "");
         assert_eq!(game.pending_attempts(), MAX_ATTEMPTS - 1);
     }
 
@@ -514,7 +514,7 @@ mod tests {
     fn submit_after_game_over_is_rejected() {
         let mut game = create_won_game();
         assert_eq!(game.submit(), Err(RejectionError::GameOver));
-        assert!(game.active_guess.is_empty());
+        assert_eq!(game.active_guess, "");
         assert_eq!(game.pending_attempts(), MAX_ATTEMPTS - 1);
     }
 

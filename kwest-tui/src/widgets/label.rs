@@ -498,6 +498,6 @@ mod tests {
         let label = Label::new("Hello", Size::new(1, 1)).with_border(Border::all(Color::Red));
         let mut writer = Vec::new();
         label.draw(&mut writer, Point::ZERO).unwrap();
-        assert!(writer.is_empty());
+        assert_eq!(writer, b"");
     }
 }

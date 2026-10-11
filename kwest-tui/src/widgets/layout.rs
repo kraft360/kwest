@@ -217,7 +217,7 @@ mod tests {
         for axis in [Axis::Horizontal, Axis::Vertical] {
             let geometry = FlowLayout::new(axis, 1).compute(&[]).unwrap();
             assert_eq!(geometry.size, Size::new(0, 0));
-            assert!(geometry.locations.is_empty());
+            assert_eq!(geometry.locations, Vec::<Point>::new());
         }
     }
 
@@ -291,7 +291,7 @@ mod tests {
             .compute(&[])
             .unwrap();
         assert_eq!(sized.size, Size::new(5, 3));
-        assert!(sized.locations.is_empty());
+        assert_eq!(sized.locations, Vec::<Point>::new());
     }
 
     #[test]
